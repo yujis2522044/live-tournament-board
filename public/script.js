@@ -898,7 +898,6 @@
             event.target.playVideo();
             renderBgmState();
           }
-          }
         },
         onStateChange(event) {
           if (event.data === window.YT.PlayerState.ENDED && bgmEnabled) {
