@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ギルドバトル 戦況解析ボード</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">BATTLE ANALYSIS</p>
+        <h1 id="event-title">ギルドバトル 戦況解析ボード</h1>
+      </div>
+      <div class="top-actions">
+        <div class="control-grid" aria-label="ライブ制御ダッシュボード">
+          <button id="header-login-control" class="control-tile control-login" type="button">
+            <span class="control-icon" aria-hidden="true"><img src="assets/control/login.svg" alt=""></span>
+            <span id="header-login-label" class="control-label">ログイン</span>
+            <small id="header-login-detail">viewer pass</small>
+          </button>
+
+          <button id="connection-control" class="control-tile control-connection" type="button">
+            <span class="status-light is-loading" id="connection-light" aria-hidden="true"></span>
+            <span class="control-icon" aria-hidden="true"><img src="assets/control/connection.svg?v=20260611-antenna" alt=""></span>
+            <span id="connection-label" class="control-label">接続確認</span>
+            <small id="connection-detail">sync check</small>
+          </button>
+
+          <button id="activity-toggle" class="control-tile control-activity" type="button" aria-expanded="false" aria-controls="activity-panel">
+            <span class="control-icon" aria-hidden="true"><img src="assets/control/log.svg" alt=""></span>
+            <span class="control-label">ログ</span>
+            <span id="activity-mini-list" class="activity-mini-list"></span>
+          </button>
+
+          <button id="tools-toggle" class="control-tile control-tools" type="button" aria-expanded="false" aria-controls="tools-menu">
+            <span class="control-icon" aria-hidden="true"><img src="assets/control/tools.svg" alt=""></span>
+            <span class="control-label">ツール</span>
+            <small id="sound-state">SE OFF</small>
+          </button>
+        </div>
+
+        <a id="feedback-link" class="feedback-button" href="https://forms.gle/uS949aQaMnbxsTDB8" target="_blank" rel="noopener noreferrer">
+          <span aria-hidden="true"><img src="assets/control/feedback.svg" alt=""></span>
+          <strong>フィードバック</strong>
+          <small>FORM</small>
+        </a>
+
+        <div id="activity-panel" class="floating-panel activity-panel" hidden>
+          <div class="floating-panel-head">
+            <h3>更新ログ</h3>
+            <button class="panel-close" type="button" data-close-panel="activity-panel" aria-label="更新ログを閉じる">×</button>
+          </div>
+          <div id="activity-panel-list" class="activity-panel-list"></div>
+        </div>
+
+        <div id="tools-menu" class="floating-panel tools-menu" hidden>
+          <div class="floating-panel-head">
+            <h3>ツール</h3>
+            <button class="panel-close" type="button" data-close-panel="tools-menu" aria-label="ツールを閉じる">×</button>
+          </div>
+          <div class="tool-qr">
+            <img id="qr-image" alt="現在のページURLのQRコード">
+            <span>共有QR</span>
+          </div>
+          <button id="sound-toggle" type="button" class="tool-row">🔇 SE OFF</button>
+          <button id="bgm-toggle" type="button" class="tool-row">♫ BGM未設定</button>
+          <button id="spectator-toggle" type="button" class="tool-row">📷 観戦モード</button>
+          <button id="fullscreen-toggle" type="button" class="tool-row">⛶ フルスクリーン</button>
+        </div>
+        <span id="last-updated" class="last-updated">最終更新 --</span>
+      </div>
+    </header>
+
+    <section id="home-section" class="status-strip" aria-label="大会状況">
+      <div>
+        <span class="metric-label">チーム</span>
+        <strong id="metric-teams">--</strong>
+      </div>
+      <div>
+        <span class="metric-label">進行</span>
+        <strong id="metric-progress">--%</strong>
+      </div>
+      <div>
+        <span class="metric-label">試合</span>
+        <strong id="metric-matches">-- / --</strong>
+      </div>
+      <div class="status-message">
+        <span class="metric-label">運営連絡</span>
+        <strong id="event-message">--</strong>
+      </div>
+    </section>
+
+    <section id="viewer-pass-section" class="viewer-pass-section" hidden>
+      <div class="section-heading compact-heading">
+        <div>
+          <p class="eyebrow">VIEWER PASS</p>
+          <h2>観戦パス</h2>
+        </div>
+      </div>
+      <div class="viewer-pass-card">
+        <div class="viewer-pass-id">
+          <span id="viewer-role-badge" class="role-badge">閲覧者</span>
+          <strong id="viewer-pass-name">Googleユーザー</strong>
+          <small id="viewer-pass-email"></small>
+        </div>
+        <label class="field viewer-favorite-field">
+          <span>応援チーム</span>
+          <select id="viewer-favorite-team"></select>
+        </label>
+      </div>
+    </section>
+
+    <section id="admin-panel" class="admin-panel" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">OPERATOR</p>
+          <h2>ライブ制御</h2>
+        </div>
+        <div class="admin-actions">
+          <button id="save-now-btn" type="button" class="secondary-button">
+            <span aria-hidden="true">✓</span>
+            変更を保存
+          </button>
+          <span id="save-state" class="save-state">自動保存</span>
+          <button id="seed-remote-btn" type="button" class="secondary-button">
+            <span aria-hidden="true">↥</span>
+            初期データ同期
+          </button>
+          <button id="export-json-btn" type="button" class="secondary-button">
+            <span aria-hidden="true">↓</span>
+            JSON出力
+          </button>
+        </div>
+      </div>
+
+      <div id="auth-card" class="auth-card">
+        <div>
+          <h3>運営ログイン</h3>
+          <p id="auth-status">認証状態を確認中</p>
+          <p id="auth-user" class="auth-user"></p>
+        </div>
+        <div class="auth-actions">
+          <button id="login-btn" type="button" class="secondary-button">Googleログイン</button>
+          <button id="claim-admin-btn" type="button" class="secondary-button" hidden>初期管理者登録</button>
+          <button id="logout-btn" type="button" class="secondary-button" hidden>ログアウト</button>
+        </div>
+      </div>
+
+      <div id="admin-manager" class="admin-manager" hidden>
+        <div class="editor-title">
+          <h3>管理者</h3>
+          <button id="refresh-admins-btn" type="button" class="secondary-button">
+            <span aria-hidden="true">↻</span>
+            更新
+          </button>
+        </div>
+        <div class="admin-manager-grid">
+          <div>
+            <h4>運営メンバー</h4>
+            <div id="admin-list" class="account-list"></div>
+          </div>
+          <div>
+            <h4>ログイン済み閲覧者</h4>
+            <div id="viewer-list" class="account-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-grid">
+        <label class="field">
+          <span>大会名</span>
+          <input id="admin-title" type="text" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>運営連絡</span>
+          <input id="admin-message" type="text" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>最大チーム数</span>
+          <input id="admin-max-teams" type="number" min="2" max="32" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>1チーム人数</span>
+          <input id="admin-players-per-team" type="number" min="1" max="10" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="editor-section">
+        <div class="editor-title">
+          <h3>チーム</h3>
+          <button id="add-team-btn" type="button" class="icon-button" title="チーム追加" aria-label="チーム追加">+</button>
+        </div>
+        <div id="team-editor" class="team-editor"></div>
+      </div>
+
+      <div class="editor-section">
+        <div class="editor-title">
+          <h3>試合</h3>
+          <button id="add-match-btn" type="button" class="icon-button" title="試合追加" aria-label="試合追加">+</button>
+        </div>
+        <div id="match-editor" class="match-editor"></div>
+      </div>
+    </section>
+
+    <section id="progress-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">UNIT TRACE</p>
+          <h2>チーム進行状況</h2>
+        </div>
+      </div>
+      <div id="team-progress-grid" class="team-progress-grid"></div>
+    </section>
+
+    <section id="matches-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">COMBAT LOG</p>
+          <h2>対戦カード</h2>
+        </div>
+      </div>
+      <div id="matches-container" class="matches-container"></div>
+    </section>
+
+    <section id="ranking-section" class="standings-layout">
+      <div>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">RANKING CORE</p>
+            <h2>ランキング</h2>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table ranking-table" id="ranking-table">
+            <thead>
+              <tr>
+                <th>順位</th>
+                <th>チーム名</th>
+                <th>勝</th>
+                <th>負</th>
+                <th>ポータル</th>
+                <th>ポイント</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">UNIT CREW</p>
+            <h2>プレイヤー</h2>
+          </div>
+        </div>
+        <div id="player-list-grouped" class="player-list-grouped"></div>
+      </div>
+    </section>
+
+    <section id="matrix-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">MATCH MATRIX</p>
+          <h2>総当たり表</h2>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table matrix-table" id="round-robin-table">
+          <thead id="round-robin-header"></thead>
+          <tbody id="round-robin-body"></tbody>
+        </table>
+      </div>
+      <div id="round-robin-cards" class="round-robin-cards"></div>
+    </section>
+  </main>
+
+  <nav class="mode-dock" aria-label="画面切替">
+    <a href="#home-section">
+      <span class="dock-icon" aria-hidden="true"><img src="assets/dock/home.svg?v=20260611-focus2" alt=""></span>
+      <em>ホーム</em>
+    </a>
+    <a href="#progress-section">
+      <span class="dock-icon" aria-hidden="true"><img src="assets/dock/progress.svg?v=20260611-focus2" alt=""></span>
+      <em>進行</em>
+    </a>
+    <a href="#matches-section">
+      <span class="dock-icon" aria-hidden="true"><img src="assets/dock/battle.svg?v=20260611-focus2" alt=""></span>
+      <em>対戦</em>
+    </a>
+    <a href="#ranking-section">
+      <span class="dock-icon" aria-hidden="true"><img src="assets/dock/ranking.svg?v=20260611-focus2" alt=""></span>
+      <em>順位</em>
+    </a>
+    <a id="admin-dock-link" href="?admin=1" hidden>
+      <span class="dock-icon" aria-hidden="true"><img src="assets/dock/control.svg?v=20260611-focus2" alt=""></span>
+      <em>制御</em>
+    </a>
+  </nav>
+
+  <audio id="site-bgm" loop preload="none"></audio>
+  <div class="youtube-bgm-host" aria-hidden="true">
+    <div id="youtube-bgm"></div>
+  </div>
+  <script src="config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
