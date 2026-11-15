@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "title": "ギルドバトル 戦況解析ボード",
+    "message": "戦況データをリアルタイム解析中",
+    "updatedAt": 1750608000000
+  },
+  "settings": {
+    "maxTeams": 10,
+    "playersPerTeam": 3
+  },
+  "activityLog": [
+    {
+      "id": "log-1",
+      "message": "ランキング更新",
+      "type": "ranking",
+      "createdAt": 1750608180000
+    },
+    {
+      "id": "log-2",
+      "message": "ミラージュコード勝利",
+      "type": "result",
+      "createdAt": 1750608120000
+    },
+    {
+      "id": "log-3",
+      "message": "Match 6 結果確定",
+      "type": "match",
+      "createdAt": 1750608060000
+    }
+  ],
+  "teams": [
+    { "id": "team-neon-axis", "name": "ネオンアクシス" },
+    { "id": "team-mirage-code", "name": "ミラージュコード" },
+    { "id": "team-luminous-nova", "name": "ルミナスノヴァ" },
+    { "id": "team-zero-link", "name": "ゼロリンク" }
+  ],
+  "teamMembers": [
+    { "id": "member-neon-1", "name": "ユウ", "teamId": "team-neon-axis" },
+    { "id": "member-neon-2", "name": "ミナト", "teamId": "team-neon-axis" },
+    { "id": "member-neon-3", "name": "リオ", "teamId": "team-neon-axis" },
+    { "id": "member-mirage-1", "name": "カナメ", "teamId": "team-mirage-code" },
+    { "id": "member-mirage-2", "name": "シオン", "teamId": "team-mirage-code" },
+    { "id": "member-mirage-3", "name": "レイ", "teamId": "team-mirage-code" },
+    { "id": "member-luminous-1", "name": "アオイ", "teamId": "team-luminous-nova" },
+    { "id": "member-luminous-2", "name": "ナギ", "teamId": "team-luminous-nova" },
+    { "id": "member-luminous-3", "name": "ハル", "teamId": "team-luminous-nova" },
+    { "id": "member-zero-1", "name": "ツバサ", "teamId": "team-zero-link" },
+    { "id": "member-zero-2", "name": "レン", "teamId": "team-zero-link" },
+    { "id": "member-zero-3", "name": "ミオ", "teamId": "team-zero-link" }
+  ],
+  "matches": [
+    {
+      "id": "match-1",
+      "matchNo": 1,
+      "round": "総当たり",
+      "teamAId": "team-neon-axis",
+      "teamBId": "team-mirage-code",
+      "portalA": 4,
+      "portalB": 2,
+      "winnerTeamId": "team-neon-axis",
+      "status": "done"
+    },
+    {
+      "id": "match-2",
+      "matchNo": 2,
+      "round": "総当たり",
+      "teamAId": "team-luminous-nova",
+      "teamBId": "team-zero-link",
+      "portalA": 2,
+      "portalB": 4,
+      "winnerTeamId": "team-zero-link",
+      "status": "done"
+    },
+    {
+      "id": "match-3",
+      "matchNo": 3,
+      "round": "総当たり",
+      "teamAId": "team-neon-axis",
+      "teamBId": "team-luminous-nova",
+      "portalA": 3,
+      "portalB": 2,
+      "winnerTeamId": "team-neon-axis",
+      "status": "done"
+    },
+    {
+      "id": "match-4",
+      "matchNo": 4,
+      "round": "総当たり",
+      "teamAId": "team-mirage-code",
+      "teamBId": "team-zero-link",
+      "portalA": 5,
+      "portalB": 0,
+      "winnerTeamId": "team-mirage-code",
+      "status": "done"
+    },
+    {
+      "id": "match-5",
+      "matchNo": 5,
+      "round": "総当たり",
+      "teamAId": "team-neon-axis",
+      "teamBId": "team-zero-link",
+      "portalA": 2,
+      "portalB": 3,
+      "winnerTeamId": "team-zero-link",
+      "status": "done"
+    },
+    {
+      "id": "match-6",
+      "matchNo": 6,
+      "round": "総当たり",
+      "teamAId": "team-mirage-code",
+      "teamBId": "team-luminous-nova",
+      "portalA": 3,
+      "portalB": 1,
+      "winnerTeamId": "team-mirage-code",
+      "status": "done"
+    }
+  ]
+}
